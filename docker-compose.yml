@@ -1,0 +1,24 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:13
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: ${DB_USER_PASSWORD}
+
+  web:
+    image: seedrs_image
+    build:
+      context: .
+    links:
+      - db
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    command: ["./scripts/start_rails.sh"]
+    volumes:
+      - .:/opt/seedrs:cached
+    stdin_open: true
+    tty: true
